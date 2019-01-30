@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<modification>
+  <id>Print blanks</id>
+  <version>1.0.0</version>
+  <vqmver>2.2.1</vqmver>
+  <author>Digi-Post.ru</author>
+  <file name="admin/view/template/sale/order_info.tpl">
+  <operation info="buttons">
+	  <search position="after"><![CDATA[<a href="<?php echo $cancel; ?>" class="button"><?php echo $button_cancel; ?></a>]]></search>
+	  <add><![CDATA[<div class="buttons"><?php if ($this->config->get('russian_post_blanks_status')==1) { ?><a href="<?php echo $russian_post_f116; ?>" target="_blank" class="button"><?php echo $button_russian_post_f116; ?></a><a href="<?php echo $russian_post_f113; ?>" target="_blank" class="button"><?php echo $button_russian_post_f113; ?></a><a href="<?php echo $russian_post_f7; ?>" target="_blank" class="button"><?php echo $button_russian_post_f7; ?></a><?php } ?></div>
+		]]></add>
+  </operation>
+  </file>
+  <file name="admin/controller/sale/order.php">
+  <operation info="LOC1">
+	  <search position="after"><![CDATA[$this->language->load('sale/order');]]></search>
+	  <add><![CDATA[$this->language->load('sale/russian_post');]]></add>
+  </operation>
+  <operation  info="LOC2">
+	  <search position="after"><![CDATA[$this->data['button_invoice'] = $this->language->get('button_invoice');]]></search>
+	  <add><![CDATA[$this->data['button_russian_post_f116'] = $this->language->get('button_russian_post_f116');
+	  $this->data['button_russian_post_f113'] = $this->language->get('button_russian_post_f113');
+	  $this->data['button_russian_post_f107'] = $this->language->get('button_russian_post_f107');
+	  $this->data['button_russian_post_f7'] = $this->language->get('button_russian_post_f7');
+	  ]]></add>
+  </operation>
+    <operation>
+	  <search position="after"><![CDATA[$this->data['invoice'] = $this->url->link('sale/order/invoice', 'token=' . $this->session->data['token'] . '&order_id=' . (int)$this->request->get['order_id'], 'SSL');]]></search>
+	  <add><![CDATA[
+	  $this->data['russian_post_f116'] =  $this->url->link('sale/order/f116', 'token=' . $this->session->data['token'] . '&order_id=' . (int)$this->request->get['order_id'], 'SSL');
+	  $this->data['russian_post_f113'] = $this->url->link('sale/order/f113', 'token=' . $this->session->data['token'] . '&order_id=' . (int)$this->request->get['order_id'], 'SSL');
+	  $this->data['russian_post_f7'] = $this->url->link('sale/order/f7', 'token=' . $this->session->data['token'] . '&order_id=' . (int)$this->request->get['order_id'], 'SSL');
+	  ]]></add>
+  </operation>
+  <operation>
+	  <search position="before"><![CDATA[public function invoice() {]]></search>
+	  <add><![CDATA[
+		public function f116() {
+		
+		$this->language->load('sale/russian_post');
+
+		if (isset($this->request->server['HTTPS']) && (($this->request->server['HTTPS'] == 'on') || ($this->request->server['HTTPS'] == '1'))) {
+			$this->data['base'] = HTTPS_SERVER;
+		} else {
+			$this->data['base'] = HTTP_SERVER;
+		}
+
+		$this->load->model('sale/order');
+
+		$this->load->model('setting/setting');
+
+		if (isset($this->request->get['order_id'])) {
+			$order_id = $this->request->get['order_id'];
+		} else {
+			$order_id = 0;
+		}
+		
+		$order_info = $this->model_sale_order->getOrder($order_id);
+		
+		if ($order_info) {
+			$this->data['total'] = number_format($order_info['total'], 2, '.', '' );
+			$this->data['shipping_postcode'] = $order_info['shipping_postcode'];
+			$this->data['shipping_name'] = $order_info['shipping_firstname']." ".$order_info['shipping_lastname'];
+			$this->data['shipping_address_1'] = $order_info['shipping_address_1']." ".$order_info['shipping_city'];
+			$this->data['shipping_address_2'] = $order_info['shipping_zone']." ".$order_info['shipping_country'];
+		}
+		$this->template = 'sale/order_f116.tpl';
+		$this->response->setOutput($this->render());
+	}
+	
+	
+	public function f113() {
+		
+		$this->language->load('sale/russian_post');
+
+		if (isset($this->request->server['HTTPS']) && (($this->request->server['HTTPS'] == 'on') || ($this->request->server['HTTPS'] == '1'))) {
+			$this->data['base'] = HTTPS_SERVER;
+		} else {
+			$this->data['base'] = HTTP_SERVER;
+		}
+
+		$this->load->model('sale/order');
+
+		$this->load->model('setting/setting');
+
+		if (isset($this->request->get['order_id'])) {
+			$order_id = $this->request->get['order_id'];
+		} else {
+			$order_id = 0;
+		}
+		
+		$order_info = $this->model_sale_order->getOrder($order_id);
+		
+		if ($order_info) {
+			$this->data['total'] = number_format($order_info['total'], 2, '.', '' );
+			$this->data['shipping_postcode'] = $order_info['shipping_postcode'];
+			$this->data['shipping_name'] = $order_info['shipping_firstname']." ".$order_info['shipping_lastname'];
+			$this->data['shipping_address_1'] = $order_info['shipping_address_1']." ".$order_info['shipping_city'];
+			$this->data['shipping_address_2'] = $order_info['shipping_zone']." ".$order_info['shipping_country'];
+		}
+		$this->template = 'sale/order_f113.tpl';
+		$this->response->setOutput($this->render());
+	}
+	
+	public function f7() {
+		
+		$this->language->load('sale/russian_post');
+
+		if (isset($this->request->server['HTTPS']) && (($this->request->server['HTTPS'] == 'on') || ($this->request->server['HTTPS'] == '1'))) {
+			$this->data['base'] = HTTPS_SERVER;
+		} else {
+			$this->data['base'] = HTTP_SERVER;
+		}
+
+		$this->load->model('sale/order');
+
+		$this->load->model('setting/setting');
+
+		if (isset($this->request->get['order_id'])) {
+			$order_id = $this->request->get['order_id'];
+		} else {
+			$order_id = 0;
+		}
+		
+		$order_info = $this->model_sale_order->getOrder($order_id);
+		
+		if ($order_info) {
+			$this->data['total'] = number_format($order_info['total'], 2, '.', '' );
+			$this->data['shipping_postcode'] = $order_info['shipping_postcode'];
+			$this->data['shipping_name'] = $order_info['shipping_firstname']." ".$order_info['shipping_lastname'];
+			$this->data['shipping_address_1'] = $order_info['shipping_address_1']." ".$order_info['shipping_city'];
+			$this->data['shipping_address_2'] = $order_info['shipping_zone']." ".$order_info['shipping_country'];
+		}
+		$this->template = 'sale/order_f7.tpl';
+		$this->response->setOutput($this->render());
+	}
+
+	  ]]></add>
+  </operation>
+  </file>
+</modification>
