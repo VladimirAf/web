@@ -1,6 +1,7 @@
 
 function DisallowCloseLead() {
 	var self = this;
+	// 
 	this.lead_id	   		 = null;
 	this.responsible_user_id = null;
 	this.tomorrow_date 		 = null;
